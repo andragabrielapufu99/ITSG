@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragment_meal_list"
+    >
+    <fragment
+        android:id="@+id/fragment_meal_list"
+        android:name="com.example.puffy.myapplication.todo.meals.MealListFragment"
+        android:label="@string/label_fragment_meal_list"
+        tools:layout="@layout/fragment_meal_list">
+        <action
+            android:id="@+id/action_MealListFragment_to_MealEditFragment"
+            app:destination="@id/fragment_meal_edit"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/fragment_login"
+        android:name="com.example.puffy.myapplication.auth.login.LoginFragment"
+        android:label="@string/fragment_login"
+        tools:layout="@layout/fragment_login"/>
+
+    <fragment
+        android:id="@+id/fragment_meal_edit"
+        android:name="com.example.puffy.myapplication.todo.meal.MealEditFragment"
+        android:label="Meal Edit"
+        tools:layout="@layout/fragment_meal_edit">
+        <action
+            android:id="@+id/action_MealEditFragment_to_MealListFragment"
+            app:destination="@id/fragment_meal_list"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right" />
+    </fragment>
+</navigation>

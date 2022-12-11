@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Food Recognition</string>
+    <string name="label_fragment_item_list">Item List</string>
+    <string name="label_fragment_meal_list">Meal List</string>
+    <string name="fragment_item_list">Item List Fragment</string>
+    <string name="fragment_login">Login Fragment</string>
+    <string name="artist">Artist</string>
+    <string name="title">Title</string>
+    <string name="year">Year</string>
+    <string name="genre">Genre</string>
+    <string name="category">Category</string>
+    <string name="servedOn">Served On</string>
+    <string name="createdAt">Created At</string>
+    <string name="updatedAt">Updated At</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="welcomeLabel">Welcome!</string>
+    <string name="logout">Logout</string>
+    <string name="onlineMessage">You are online !</string>
+    <string name="not_image">No image :(</string>
+    <string name="title_activity_maps">Edit delivery address</string>
+    <string name="map_view_btn_desc">Delivery address</string>
+    <string name="title_activity_view_maps">View delivery address</string>
+</resources>
