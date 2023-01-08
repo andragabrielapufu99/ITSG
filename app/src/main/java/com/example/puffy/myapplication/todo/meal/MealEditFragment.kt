@@ -82,8 +82,11 @@ class MealEditFragment: Fragment() {
             startDelay = 1000
             start()
             addUpdateListener {
-                categoryTF.translationX = it.animatedValue as Float
-                servedOnTF.translationX = it.animatedValue as Float
+                if(categoryTF != null && servedOnTF != null) {
+                    categoryTF.translationX = it.animatedValue as Float
+                    servedOnTF.translationX = it.animatedValue as Float
+                }
+
             }
         }
     }
