@@ -9,6 +9,9 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
+import java.net.URL
+import java.net.URLConnection
+
 
 class ConnectivityLiveData internal constructor(private val connectivityManager : ConnectivityManager) : LiveData<Boolean>() {
 
@@ -26,10 +29,39 @@ class ConnectivityLiveData internal constructor(private val connectivityManager 
         }
     }
 
+    private fun isConnectedToServer(url: String?, timeout: Int): Boolean {
+        return try {
+            val myUrl = URL(url)
+            val connection: URLConnection = myUrl.openConnection()
+            connection.setConnectTimeout(timeout)
+            connection.connect()
+            true
+        } catch (e: Exception) {
+            // Handle your exceptions
+            false
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onActive() {
         super.onActive()
         val activeNetwork: NetworkInfo? = connectivityManager.activeNetworkInfo //conectat sau neconectat
+//        if(activeNetwork?.isConnectedOrConnecting == true) {
+//            if(isConnectedToServer("http://${Api.baseURL}", 10)) {
+//                postValue(true)
+//                connectivityManager.registerDefaultNetworkCallback(networkCallback)
+//                Log.i(tagName, "Register network callback- connected to server")
+//            }else {
+//                postValue(false)
+//                connectivityManager.registerDefaultNetworkCallback(networkCallback)
+//                connectivityManager.unregisterNetworkCallback(networkCallback)
+//                Log.i(tagName, "Register network callback- disconnected to server")
+////                Log.i(tagName, "Offline")
+//            }
+//        }else {
+//            postValue(false)
+//        }
+
         postValue(activeNetwork?.isConnectedOrConnecting == true)
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
         Log.i(tagName, "Register network callback")

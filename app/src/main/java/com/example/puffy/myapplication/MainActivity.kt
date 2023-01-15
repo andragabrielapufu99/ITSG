@@ -3,6 +3,8 @@ package com.example.puffy.myapplication
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 

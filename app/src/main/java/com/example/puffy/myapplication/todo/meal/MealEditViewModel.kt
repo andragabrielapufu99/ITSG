@@ -101,6 +101,17 @@ class MealEditViewModel(application: Application) : AndroidViewModel(application
                 when (result) {
                     is MyResult.Success -> {
                         Log.d(tagName, "add${entity} succeeded")
+//                        when (val result2 = MealRepository.refresh()) {
+//                            is MyResult.Success -> {
+//                                Log.d(tagName, "Refresh succeeded")
+//                            }
+//                            is MyResult.Error -> {
+//                                Log.w(tagName, "Refresh failed", result2.exception);
+//                                mutableException.value = result2.exception
+//                            }
+//                        }
+//                        mutableCompleted.value = true
+//                        mutableFetching.value = false
                     }
                     is MyResult.Error -> {
                         Log.w(tagName, "add${entity} failed", result.exception)

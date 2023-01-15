@@ -22,4 +22,12 @@
     <string name="title_activity_maps">Edit delivery address</string>
     <string name="map_view_btn_desc">Delivery address</string>
     <string name="title_activity_view_maps">View delivery address</string>
+    <string name="spinner_title">Choose category</string>
+    <string-array name="categories">
+        <item>breakfast</item>
+        <item>lunch</item>
+        <item>dinner</item>
+        <item>snack</item>
+    </string-array>
+
 </resources>

@@ -12,7 +12,7 @@ data class FoodMealAttribute(
 ){
     override fun toString(): String {
         var s: String =
-            "Id : $id\nFood Id : $food_id\nName : $name\nCalories : $calories\nProtein: ${protein}\nCarbs: ${carbs}";
+            "Name : $name\nCalories : $calories\nProtein: ${protein}\nCarbs: ${carbs}";
         if (serving_size != null) s = "$s\nServing size: ${serving_size}"
         return s
     }

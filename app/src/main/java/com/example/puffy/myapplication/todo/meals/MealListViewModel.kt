@@ -64,6 +64,7 @@ class MealListViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun refreshLocal() : List<Meal>? {
+        runBlocking { MealRepository.refreshLocal2() }
         return MealRepository.items.value
     }
 

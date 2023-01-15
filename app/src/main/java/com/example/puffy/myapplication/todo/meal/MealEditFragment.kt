@@ -13,12 +13,14 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Looper
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,6 +34,8 @@ import com.example.puffy.myapplication.R
 import com.example.puffy.myapplication.todo.data.Meal
 import com.example.puffy.myapplication.todo.data.MealRepository
 import kotlinx.android.synthetic.main.fragment_meal_edit.*
+import kotlinx.android.synthetic.main.fragment_meal_edit.view.*
+import kotlinx.android.synthetic.main.view_meal_list.view.*
 import okhttp3.*
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -40,7 +44,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
+
 
 class MealEditFragment: Fragment() {
 
@@ -265,6 +269,37 @@ class MealEditFragment: Fragment() {
 
             }
         }
+
+        categoryTF.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            when (keyCode) {
+                KeyEvent.KEYCODE_DEL -> {
+                    println("press delete")
+                }
+                else -> return@OnKeyListener false
+            }
+            true
+        })
+
+        categoryTF.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                println("Before Category new value")
+                println(s)
+            }
+
+            override fun onTextChanged(
+                s: CharSequence, start: Int,
+                before: Int, count: Int
+            ) {
+                println("Category new value")
+                println(s)
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                println("After Category new value")
+                println(s)
+            }
+        })
+
         logoutBtn.setOnClickListener {
             viewModel.logout()
             findNavController().navigate(R.id.fragment_login)
@@ -287,6 +322,20 @@ class MealEditFragment: Fragment() {
 
 
     } //end onActivityCreated
+
+    private fun getCurrentDate(): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+
+        // on below line we are creating a variable for
+        // current date and time and calling a simple
+        // date format in it.
+        val currentDateAndTime = sdf.format(Date())
+
+        // on below line we are setting current
+        // date and time to our text view.
+
+        return currentDateAndTime
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setupViewModel() {
@@ -318,6 +367,7 @@ class MealEditFragment: Fragment() {
 
         val id = id
         if (id == -1) {
+            servedOnTF.setText(getCurrentDate())
             item = Meal(-1, "", served_on = "", created_at = "", updated_at = "", foods = arrayListOf(), pathImage = "", calories=0F)
         } else {
             if (id != null) {
@@ -371,6 +421,11 @@ class MealEditFragment: Fragment() {
                 e.printStackTrace()
             }
         }
+    }
+
+    fun onCategorySelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+        // On selecting a spinner item
+        val item = parent.getItemAtPosition(position).toString()
     }
 
 }

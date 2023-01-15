@@ -77,6 +77,15 @@
             android:layout_marginBottom="10dp"
             tools:src="@color/design_default_color_on_primary" />
 
+<!--        &lt;!&ndash; Text Label &ndash;&gt;-->
+<!--        <TextView-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dip"-->
+<!--            android:text="Category:"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            />-->
+
         <EditText
             android:id="@+id/categoryTF"
             android:layout_width="match_parent"

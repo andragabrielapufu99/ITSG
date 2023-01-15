@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.example.puffy.myapplication.common.Api
 import com.example.puffy.myapplication.common.EventType
 import com.example.puffy.myapplication.common.MyResult
@@ -36,12 +37,21 @@ object MealRepository {
     var needWorkers : Boolean = addedLocal.size > 0 || updatedLocal.size > 0
     private var networkStatus : Boolean = false
 
+    fun hardcodateData() {
+        val data: ArrayList<Meal> = arrayListOf<Meal>()
+        data.add(Meal(1, "breakfast", "08-01-2023", "", "", arrayListOf<FoodMealAttribute>(), 12F, ""))
+        runBlocking { addLocal(data[0]) }
+        println(this.mealDao.getAll().value)
+    }
+
     fun setItems() {
-        println(this.mealsLocal.value)
+//        println("hardcode")
+//        runBlocking { hardcodateData() }
+//        println(this.mealsLocal.value)
         val meals = this.convertToMealList(this.mealsLocal.value)
-        println(meals)
+//        println(meals)
         items = MutableLiveData<List<Meal>>().apply { value = meals }
-        println("items repository ${items.value}")
+//        println("items repository ${items.value}")
 //        items.apply { value = meals }
 //        items.value = meals
     }
@@ -51,9 +61,9 @@ object MealRepository {
         this.attributeDao = attributeDao
         this.mealsLocal = this.mealDao.getAll()
         this.attributesLocal = this.attributeDao.getAll()
-        println("before set items")
+//        println("before set items")
         this.setItems()
-        println("after set items")
+//        println("after set items")
     }
 
     fun convertToMealLocal(meal: Meal): MealLocal {
@@ -150,10 +160,27 @@ object MealRepository {
 
     suspend fun refresh() : MyResult<Boolean> {
         try{
-            println("meals")
-            val items = MealApi.service.getAll() //date de pe server
+            println("refresh meals")
+            if(networkStatus){
+                val items = MealApi.service.getAll() //date de pe server
+//                if(addedLocal.size > 0){
+//                    var newItems: ArrayList<Meal> = arrayListOf()
+//                    newItems.add(addedLocal[0])
+//                    items.forEach { meal ->
+//                        newItems.add(meal)
+//                    }
+//                    addedLocal = arrayListOf()
+//                    this.refreshLocal(newItems)
+//                }
+//                else
+                this.refreshLocal(items)
+            }else {
+                this.refreshLocal2()
+                this.setItems()
+            }
+//            val items = MealApi.service.getAll() //date de pe server
 //            println(items)
-            this.refreshLocal(items)
+//            this.refreshLocal(items)
 //            for (item in items) {
 //                val mealLocal = this.convertToMealLocal(item)
 //                this.mealDao.insert(mealLocal)
@@ -190,13 +217,19 @@ object MealRepository {
         try{
             if(networkStatus){
 //                val result = MealApi.service.add(item, file)
+                this.addedLocal = arrayListOf()
                 if(file != null){
-                    this.PostImage(item, file, context);
+                    addedLocal.add(item)
+                    this.PostImage(item, file, context)
                 }
+                addedLocal.add(item)
                 return MyResult.Success(item)
             }
             addLocal(item)
             addedLocal.add(item)
+            refresh()
+            println("added local")
+            println(mealsLocal.value)
             return MyResult.Success(item)
         }catch(ex : Exception){
             if(ex is HttpException){
@@ -214,11 +247,13 @@ object MealRepository {
 
     suspend fun addLocal(meal : Meal) {
         val mealLocal = this.convertToMealLocal(meal)
+        println("meal local")
+        println(mealLocal)
         this.mealDao.insert(mealLocal)
         val attributesLocal = this.convertToFoodAttributeLocalList(meal.id, meal.foods)
         attributesLocal.forEach { attribute -> this.attributeDao.insert(attribute)
         }
-        needWorkers = true
+//        needWorkers = true
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -232,7 +267,7 @@ object MealRepository {
             updatedLocal.remove(meal)
             println("Size after : ${updatedLocal.size}")
         }
-        needWorkers = addedLocal.size > 0 || updatedLocal.size > 0
+//        needWorkers = addedLocal.size > 0 || updatedLocal.size > 0
     }
 
     suspend fun updateLocal(meal : Meal){
@@ -241,7 +276,7 @@ object MealRepository {
         val attributesLocal = this.convertToFoodAttributeLocalList(meal.id, meal.foods)
         attributesLocal.forEach { attribute -> this.attributeDao.update(attribute)
         }
-        needWorkers = true
+//        needWorkers = true
     }
 
     suspend fun update(id : Int, meal : Meal) : MyResult<Meal> {
@@ -269,8 +304,15 @@ object MealRepository {
         this.mealDao.deleteAll()
     }
 
+    suspend fun refreshLocal2() {
+        this.mealsLocal = this.mealDao.getAll()
+        this.attributesLocal = this.attributeDao.getAll()
+        this.setItems()
+    }
+
     suspend fun refreshLocal(items: List<Meal>) {
         this.items.value = items
+
 //        println("meals local ${this.mealDao.getAll().value}")
 //        for (item in items) {
 //            val mealLocal = this.convertToMealLocal(item)
@@ -342,7 +384,10 @@ object MealRepository {
 
                     override fun onResponse(call: Call, response: Response) {
                         runBlocking {
-                            refresh()
+                            println("Response add")
+                            println(response)
+//                            return@runBlocking item
+//                            refresh()
                         }
                     }
                 }
