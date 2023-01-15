@@ -7,7 +7,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.example.puffy.myapplication.common.Api
 import com.example.puffy.myapplication.common.EventType
 import com.example.puffy.myapplication.common.MyResult
@@ -18,11 +17,14 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.HttpException
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.Exception
+import java.util.concurrent.CountDownLatch
+
 
 object MealRepository {
     private lateinit var mealDao: MealDao
@@ -220,7 +222,9 @@ object MealRepository {
                 this.addedLocal = arrayListOf()
                 if(file != null){
                     addedLocal.add(item)
-                    this.PostImage(item, file, context)
+                    val result = this.PostImage(item, file, context)
+                    addedLocal.add(result)
+                    return MyResult.Success(result)
                 }
                 addedLocal.add(item)
                 return MyResult.Success(item)
@@ -350,7 +354,7 @@ object MealRepository {
         return directory.getAbsolutePath()
     }
 
-    fun PostImage(item: Meal, bitmapImage: Bitmap, context: Context) {
+    fun PostImage(item: Meal, bitmapImage: Bitmap, context: Context): Meal {
 
         // Take image form your ImageView
         saveToInternalStorage(bitmapImage, "food.png", context)
@@ -376,21 +380,40 @@ object MealRepository {
                 .build()
         var request = Request.Builder().url("http://${Api.baseURL}/api/meals").post(requestBody).build()
         var client = OkHttpClient()
+        val countDownLatch = CountDownLatch(1)
         client
             .newCall(request)
             .enqueue(
                 object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {}
+                    override fun onFailure(call: Call, e: IOException) {
+                        call.cancel()
+                        countDownLatch.countDown();
+                    }
 
                     override fun onResponse(call: Call, response: Response) {
                         runBlocking {
-                            println("Response add")
-                            println(response)
-//                            return@runBlocking item
-//                            refresh()
+                            val myResponse = response.body!!.string()
+                            try {
+                                val json = JSONObject(myResponse)
+                                println("Response add")
+                                println(json)
+                                countDownLatch.countDown();
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            }
                         }
+//                        println("Response add")
+//                        println(response.body)
+////                        runBlocking {
+////                            println("Response add")
+////                            println(response)
+//////                            return@runBlocking item
+//////                            refresh()
+////                        }
                     }
                 }
             )
+        countDownLatch.await();
+        return item
     }
 }

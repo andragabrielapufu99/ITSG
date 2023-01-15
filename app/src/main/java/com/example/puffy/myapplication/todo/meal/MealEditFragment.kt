@@ -177,6 +177,7 @@ class MealEditFragment: Fragment() {
                 item?.pathImage = currentPhotoPath
                 imageView.setImageURI(uri)
                 imageView.visibility = View.VISIBLE
+                imageProgress.visibility = View.GONE
 
             }else if(requestCode == REQUEST_PICK_IMAGE){
                 val uri = data?.data
@@ -186,6 +187,7 @@ class MealEditFragment: Fragment() {
                 }
                 imageView.setImageURI(uri)
                 imageView.visibility = View.VISIBLE
+                imageProgress.visibility = View.GONE
             }
         }
     }
@@ -305,6 +307,7 @@ class MealEditFragment: Fragment() {
             findNavController().navigate(R.id.fragment_login)
         }
         if(id != -1){
+            imageProgress.visibility = View.VISIBLE
             capturePhoto.visibility = View.GONE
             pickPhoto.visibility = View.GONE
         }else {
@@ -412,6 +415,7 @@ class MealEditFragment: Fragment() {
                 // Only for making changes in UI
                 handler.post {
                     imageView.setImageBitmap(image)
+                    imageProgress.visibility = View.GONE
                 }
             }
 

@@ -50,6 +50,7 @@ class MealListAdapter(private val fragment: Fragment) : RecyclerView.Adapter<Mea
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageView: ImageView = view.imageView
         val textView: TextView = view.text
+        val progressImage: ProgressBar = view.fetchImageProgress
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -69,8 +70,9 @@ class MealListAdapter(private val fragment: Fragment) : RecyclerView.Adapter<Mea
         holder.itemView.tag = item
         holder.imageView.setImageURI(null)
         holder.imageView.visibility = View.GONE
+        holder.progressImage.visibility = View.VISIBLE
         if(item.pathImage?.isNotEmpty() == true){
-            this.getImageFromUrl(holder.imageView, item.pathImage!!)
+            this.getImageFromUrl(holder.imageView, item.pathImage!!, holder.progressImage)
             holder.imageView.visibility = View.VISIBLE
         }
         holder.textView.text = item.toString()
@@ -94,7 +96,7 @@ class MealListAdapter(private val fragment: Fragment) : RecyclerView.Adapter<Mea
         return false
     }
 
-    fun getImageFromUrl(imageView: ImageView, url: String) {
+    fun getImageFromUrl(imageView: ImageView, url: String, progressImage: ProgressBar) {
         val executor = Executors.newSingleThreadExecutor()
 
         // Once the executor parses the URL
@@ -119,6 +121,7 @@ class MealListAdapter(private val fragment: Fragment) : RecyclerView.Adapter<Mea
                 // Only for making changes in UI
                 handler.post {
                     imageView.setImageBitmap(image)
+                    progressImage.visibility = View.GONE
                 }
             }
 

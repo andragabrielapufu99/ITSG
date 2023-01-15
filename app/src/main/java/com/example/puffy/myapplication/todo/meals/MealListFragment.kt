@@ -30,6 +30,7 @@ import com.example.puffy.myapplication.common.MyWorker
 import com.example.puffy.myapplication.todo.data.*
 import kotlinx.android.synthetic.main.fragment_meal_list.*
 import kotlinx.android.synthetic.main.main_activity.*
+import kotlinx.android.synthetic.main.view_meal_list.*
 import org.json.JSONObject
 
 class MealListFragment : Fragment() {
